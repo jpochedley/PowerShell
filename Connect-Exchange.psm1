@@ -1,4 +1,5 @@
-﻿function Connect-Exchange
+﻿#requires -Version 3
+function Connect-Exchange
 {
     [CmdletBinding()]
     
