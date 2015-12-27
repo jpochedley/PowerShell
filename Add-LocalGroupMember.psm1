@@ -1,4 +1,5 @@
-﻿function Add-LocalGroupMember
+﻿#requires -Version 2 -Modules ActiveDirectory
+function Add-LocalGroupMember
 {
     [CmdletBinding()]
     
