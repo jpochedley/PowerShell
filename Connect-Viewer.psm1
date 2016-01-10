@@ -117,7 +117,7 @@ function Connect-Viewer
                     }
                     Else
                     {
-                        Write-Output 'Press any key to reset Remote Control Viewer settings ...'
+                        Write-Host 'Press any key to reset Remote Control Viewer settings ...'
 
                         $null = $host.UI.RawUI.ReadKey('NoEcho,IncludeKeyDown')
                     }
