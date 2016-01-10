@@ -17,7 +17,7 @@ function Get-Monitor
                 $Monitors = Get-WmiObject -Class wmimonitorid -Namespace root/wmi -ErrorAction Stop
                 Foreach($Monitor in $Monitors)
                 {
-                    If($Monitor.UserFriendlyName -ne $null)
+                    If($null -ne $Monitor.UserFriendlyName)
                     {
                         $Model = [System.Text.Encoding]::ASCII.GetString($Monitor.UserFriendlyName)
                     }
@@ -25,7 +25,7 @@ function Get-Monitor
                     {
                         $Model = 'N/A'
                     }
-                    If($Monitor.SerialNumberID -ne $null)
+                    If($null -ne $Monitor.SerialNumberID)
                     {
                         $SerialNumber = [System.Text.Encoding]::ASCII.GetString($Monitor.SerialNumberID)
                         If($SerialNumber -eq 0)
