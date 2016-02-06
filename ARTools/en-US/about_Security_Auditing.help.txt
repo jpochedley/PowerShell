@@ -1,0 +1,82 @@
+TOPIC
+    about_Security_Auditing
+
+SHORT DESCRIPTION
+    Describes the various IT security auditing PowerShell functions and their purposes.
+
+LONG DESCRIPTION
+    Various PowerShell functions have been created to facilitate security auditing. 
+    
+    Almost all security auditing functions require:
+    - An elavated PowerShell prompt
+    - Remote Server Administration Tools (RSAT)
+
+AUDTING FUNCTIONS
+    Name                             Synopsis                                                                                      
+    ----                             --------                                                                                      
+    Find-UnquotedServicePath         Finds services that use unquoted paths.                                                       
+    Get-LocalGroupMembership         Gets local group membership details.                                                          
+    Get-ServiceExecutablePermissions Gets file permissions of service executables.                                                 
+    Get-StaleDomainUser              Displays domain user accounts whose passwords have not been changed in a given number of days.
+    Get-StaleLocalUser               Displays local user accounts whose passwords have not been changed in a given number of days. 
+    Test-SNMPCommunityString         Tests SNMP community strings.                                                                 
+
+EXAMPLES
+    Please note: If running scripts is disabled on your system, please run the following command:
+    
+    PS C:\>Set-ExecutionPolicy -ExecutionPolicy Bypass -Scope CurrentUser
+
+    -------------------------- EXAMPLE 1 --------------------------
+
+    PS C:\>Find-UnquotedServicePath | Export-csv -Path c:\UnquotedServicePaths.csv
+
+    This command queries all domain joined computers for unquoted service paths using the current users credentials. The results are then exported to a CSV file named UnquotedServicePaths.csv at the root of the C drive.
+
+    -------------------------- EXAMPLE 2 --------------------------
+
+    PS C:\>Get-LocalGroupMembership | Export-csv -Path c:\GroupMembership.csv
+
+    This command queries all domain-joined computers for direct members of the Administrators group using the current user's credentials. The results are then exported to a CSV file named GroupMembership.csv at the root of the C drive.
+
+    -------------------------- EXAMPLE 3 --------------------------
+
+    PS C:\>Get-ServiceExecutablePermissions | Export-csv -Path c:\ServiceExePermissions.csv
+
+    This command queries the file permissions of service executables for those services which are set to automatically start on all domain-joined computers. Any permissions which allow a nonpriviledged user to modify a service executable are returned. The results are then exported to a CSV file named ServiceExePermissions.csv at the root of the C drive.
+
+    -------------------------- EXAMPLE 4 --------------------------
+
+    PS C:\>Get-StaleDomainUser -IncludeDisabled | Export-csv -Path c:\DomainUsers.csv
+
+    This command displays all domain user accounts (both enabled and disabled) whose password age has exceeded the maximum password age of the current domain. The results are then exported to a CSV file named DomainUsers.csv at the root of the C drive.
+
+    -------------------------- EXAMPLE 5 --------------------------
+
+    PS C:\>Get-StaleLocalUser -IncludeDisabled | Export-csv -Path c:\LocalUsers.csv
+
+    This command queries all domain-joined computers for any local user accounts (both enabled and disabled) whose password age has exceeded the maximum password age of the current domain using the current user's credentials. The results are then exported to a CSV file named LocalUsers.csv at the root of the C drive.
+
+    -------------------------- EXAMPLE 6 --------------------------
+
+    PS C:\>Test-SNMPCommunityString -Audit | Export-csv -Path c:\SNMPQuery.csv
+
+    This command queries IP addresses from all IP ranges found in the IP range list to see if they will respond to the default community string of 'public'. The results are then exported to a CSV file named SNMPQuery.csv at the root of the C drive.
+
+    The IP Range list can be found and updated from the IT Department's Sharepoint page.
+
+    -------------------------- EXAMPLE 7 --------------------------
+
+    PS C:\>Test-TCPPort -Port 23 -Audit | Export-csv -Path c:\TelnetQuery.csv
+
+    This command queries IP addresses from all IP ranges found in the IP range list to see if port 23 is open (commonly used for telnet). The results are then exported to a CSV file named TelnetQuery.csv at the root of the C drive.
+
+    The IP Range list can be found and updated from the IT Department's Sharepoint page.
+
+SEE ALSO
+    For further examples on how to use the auditing functions, refer to the Example section of each function's help documentation.
+
+    To view the help documentation for a function run the command shown below inserting the name of the function where <functionname> is shown.
+
+        Get-Help <functionname> -ShowWindow
+
+        Ex. Get-Help Test-SNMPCommunityString -ShowWindow
