@@ -65,5 +65,5 @@ Foreach{
         }
     }
     
-    $Item | Set-Content -Value $StringBuilder.ToString()
+    Set-Content -Path $Item.FullName -Value $StringBuilder.ToString()
 }
