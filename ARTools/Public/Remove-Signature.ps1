@@ -8,7 +8,7 @@ function Remove-Signature{
 	)
 
 	Begin{
-		Push-Location $env:USERPROFILE
+		Push-Location -Path $env:USERPROFILE
 	}
 
 	Process{
@@ -23,4 +23,23 @@ function Remove-Signature{
     
 				Foreach($Line in $Content)
 				{
+					If($Line -match '^# SIG # Begin signature block|^<!-- SIG # Begin signature block -->')
+					{
+						Break
+					}
+					Else{
+						$null = $StringBuilder.AppendLine($Line)
+					}
+				}
+    
+				Set-Content -Path $Item.FullName -Value $StringBuilder.ToString()
+			}
+		}
+	}
+
+	End{
+		Pop-Location
+	}
+}
+
 

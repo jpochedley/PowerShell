@@ -56,7 +56,7 @@ Foreach{
     
     Foreach($Line in $Content)
     {
-        If($Line -match '# SIG # Begin signature block|<!-- SIG # Begin signature block -->')
+        If($Line -match '^# SIG # Begin signature block|^<!-- SIG # Begin signature block -->')
         {
             Break
         }
