@@ -17,22 +17,27 @@ function Remove-Signature{
 			$Item = $_
 			
 			If($Item.Extension -match '\.ps1|\.psm1|\.psd1|\.ps1xml'){
-				$Content = Get-Content -Path $Item.FullName
+				Try{
+					$Content = Get-Content -Path $Item.FullName -ErrorAction Stop
     
-				$StringBuilder = New-Object -TypeName System.Text.StringBuilder -ErrorAction Stop
+					$StringBuilder = New-Object -TypeName System.Text.StringBuilder -ErrorAction Stop
     
-				Foreach($Line in $Content)
-				{
-					If($Line -match '^# SIG # Begin signature block|^<!-- SIG # Begin signature block -->')
+					Foreach($Line in $Content)
 					{
-						Break
+						If($Line -match '^# SIG # Begin signature block|^<!-- SIG # Begin signature block -->')
+						{
+							Break
+						}
+						Else{
+							$null = $StringBuilder.AppendLine($Line)
+						}
 					}
-					Else{
-						$null = $StringBuilder.AppendLine($Line)
-					}
-				}
     
-				Set-Content -Path $Item.FullName -Value $StringBuilder.ToString()
+					Set-Content -Path $Item.FullName -Value $StringBuilder.ToString()
+				}
+				Catch{
+					Write-Error -Message $_.Exception.Message
+				}
 			}
 		}
 	}

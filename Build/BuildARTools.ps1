@@ -2,7 +2,7 @@
 
 Copy-Item $PSScriptRoot\..\..\ARTools\ARTools -Destination $PSScriptRoot\..\ -Container -Recurse
 
-Get-ChildItem -Path $PSScriptRoot\..\ARTools -File -Recurse -Include *XP*,*Data* | Remove-Item -Force
+Get-ChildItem -Path $PSScriptRoot\..\ARTools -File -Recurse -Include *-XP*,*Data*,*-CNS*,*-TeR* | Remove-Item -Force
 
 $FunctionsToExport = (Get-ChildItem -Path $PSScriptRoot\..\ARTools\Public | Select -ExpandProperty BaseName | Foreach{"'$_'"}) -join ",`r`n`t`t"
 
