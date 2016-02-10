@@ -36,7 +36,20 @@ function Get-ADGroupMembershipTree
         ForEach-Object -Process {
             $Object = $_
                         
-            If($Object.Objectclass -eq 'user')
+            If($Object.ObjectClass -eq 'group')
+            {
+                If($Inheritence)
+                {
+                    $NewInheritence = "$Inheritence > $($Object.Name)"
+                    
+                    Get-ADGroupMembershipTree -Identity $Object.DistinguishedName -Inheritence $NewInheritence
+                }
+                Else
+                {
+                    Get-ADGroupMembershipTree -Identity $Object.DistinguishedName -Inheritence $Object.Name
+                }
+            }
+			Else
             {
                 If($Inheritence)
                 {
@@ -57,19 +70,6 @@ function Get-ADGroupMembershipTree
                             $InitialADGroup.Name
                         }
                     }
-                }
-            }
-            ElseIf($Object.ObjectClass -eq 'group')
-            {
-                If($Inheritence)
-                {
-                    $NewInheritence = "$Inheritence > $($Object.Name)"
-                    
-                    Get-ADGroupMembershipTree -Identity $Object.DistinguishedName -Inheritence $NewInheritence
-                }
-                Else
-                {
-                    Get-ADGroupMembershipTree -Identity $Object.DistinguishedName -Inheritence $Object.Name
                 }
             }
         } |

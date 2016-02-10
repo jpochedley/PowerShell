@@ -1,3 +1,4 @@
+#requires -Version 2
 function Remove-Signature
 {
     [cmdletbinding()]
