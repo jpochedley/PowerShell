@@ -29,7 +29,7 @@ function Remove-WorkstationPrinter
 
             Foreach($Printer in $PrinterName)
             {
-                Start-Process -FilePath $env:windir\System32\rundll32.exe -ArgumentList "printui.dll,PrintUIEntry /gd /n\\$PrintServer\$Printer" -Verb RunAs -PassThru -WindowStyle Hidden | Wait-Process -TimeoutSec 20 -ErrorAction SilentlyContinue
+                Start-Process -FilePath $env:windir\System32\rundll32.exe -ArgumentList "printui.dll,PrintUIEntry /gd /n`"\\$PrintServer\$Printer`"" -Verb RunAs -PassThru -WindowStyle Hidden | Wait-Process -TimeoutSec 20 -ErrorAction SilentlyContinue
                 
                 $Verification = 'Installed'
                 $Verification = Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Print\Connections' |
