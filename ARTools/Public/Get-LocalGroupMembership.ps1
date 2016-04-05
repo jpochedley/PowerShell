@@ -98,7 +98,6 @@ function Get-LocalGroupMembership
     Process{
         [scriptblock]$Scriptblock = {
             $Group = $Using:Group
-            $VerbosePreference = $Using:VerbosePreference
             $WarningPreference = $Using:WarningPreference
         
             Foreach($G in $Group)

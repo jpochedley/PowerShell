@@ -131,7 +131,7 @@ function Test-SNMPCommunityString
                         Import-Module -Name ARTools -Force
                         Import-Module -Name DnsClient
                     
-                        Test-SNMPCommunityString -StartIPAddress $($Using:Range.StartIPAddress) -EndIPAddress $($Using:Range.EndIPAddress) -Community $Using:Community -QueryDescription -Verbose:$Using:VerbosePreference
+                        Test-SNMPCommunityString -StartIPAddress $($Using:Range.StartIPAddress) -EndIPAddress $($Using:Range.EndIPAddress) -Community $Using:Community -QueryDescription -Verbose:$VerboseSwitch
                     }
                 }
                 Else
@@ -142,7 +142,7 @@ function Test-SNMPCommunityString
                         Import-Module -Name ARTools -Force
                         Import-Module -Name DnsClient
                     
-                        Test-SNMPCommunityString -StartIPAddress $($Using:Range.StartIPAddress) -Community $Using:Community -QueryDescription -Verbose:$Using:VerbosePreference
+                        Test-SNMPCommunityString -StartIPAddress $($Using:Range.StartIPAddress) -Community $Using:Community -QueryDescription -Verbose:$VerboseSwitch
                     }
                 }
             }

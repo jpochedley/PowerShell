@@ -30,13 +30,12 @@ function Get-InstalledProgram
 
     Process{
         [scriptblock]$ScriptBlock = {
-            $VerbosePreference = $Using:VerbosePreference
             $WarningPreference = $Using:WarningPreference
 
             $Filter = $Using:Filter
             $SoftwareCode = $Using:SoftwareCode
-            $ProductName = $Using:ProductName
-            $ProductVersion = $Using:ProductVersion
+            $ProductName = $($Using:ProductName).Replace('*','%')
+            $ProductVersion = $($Using:ProductVersion).Replace('*','%')
 
             $Params = @{
                 Namespace = 'root/cimv2/sms'
@@ -62,11 +61,11 @@ function Get-InstalledProgram
             {
                 If($Params.Filter)
                 {
-                    $Params.Filter += " AND ProductVersion LIKE '%$ProductVersion%'"
+                    $Params.Filter += " AND ProductVersion LIKE '$ProductVersion'"
                 }
                 Else
                 {
-                    $Params.Filter = "ProductVersion LIKE '%$ProductVersion%'"
+                    $Params.Filter = "ProductVersion LIKE '$ProductVersion'"
                 }
             }
             

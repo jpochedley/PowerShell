@@ -24,7 +24,7 @@ function Remove-WorkstationPrinter
         [scriptblock]$Scriptblock = {
             $PrintServer = $Using:PrintServer
             $PrinterName = $Using:PrinterName
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
 
             Foreach($Printer in $PrinterName)
@@ -44,11 +44,11 @@ function Remove-WorkstationPrinter
         
                 If($null -eq $Verification)
                 {
-                    Write-Verbose -Message "$($Printer.ToUpper()) printer successfully removed from $($env:computername.ToUpper())."
+                    Write-Verbose -Message "$($Printer.ToUpper()) printer successfully removed from $($env:computername.ToUpper())." -Verbose:$VerboseSwitch
                 }
                 Else
                 {
-                    Write-Warning -Message "Failed to remove $($Printer.ToUpper()) printer from $($env:computername.ToUpper())"
+                    Write-Error -Message "Failed to remove $($Printer.ToUpper()) printer from $($env:computername.ToUpper())"
                 }
             }
 

@@ -55,7 +55,7 @@ function Invoke-Installation
 
     Process{
         [scriptblock]$ScriptBlock = {
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
 
             $Password = $Using:Password
@@ -72,21 +72,21 @@ function Invoke-Installation
 
             Try
             {
-                Write-Verbose -Message 'Mapping installation directory ...'
+                Write-Verbose -Message 'Mapping installation directory ...' -Verbose:$VerboseSwitch
 
                 $null = New-PSDrive -Name Temp -PSProvider FileSystem -Root $WorkingDirectory -Credential $Credential -ErrorAction Stop
 
-                Write-Verbose -Message 'Installation directory mapped successfully.'
+                Write-Verbose -Message 'Installation directory mapped successfully.' -Verbose:$VerboseSwitch
 
                 Try
                 {
                     If(-not [string]::IsNullOrEmpty($SoftwareCode))
                     {
-                        Write-Verbose -Message "Beginning installation of MSI package $SoftwareCode on $env:COMPUTERNAME ..."
+                        Write-Verbose -Message "Beginning installation of MSI package $SoftwareCode on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                     }
                     Else
                     {
-                        Write-Verbose -Message "Beginning installation of $ProductName on $env:COMPUTERNAME ..."
+                        Write-Verbose -Message "Beginning installation of $ProductName on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                     }
 
                     If($PowerShellScript)
@@ -110,7 +110,7 @@ function Invoke-Installation
 
                         If($IsPresent)
                         {
-                            Write-Verbose -Message "Installation of  MSI package $SoftwareCode on $env:COMPUTERNAME completed successfully."
+                            Write-Verbose -Message "Installation of  MSI package $SoftwareCode on $env:COMPUTERNAME completed successfully." -Verbose:$VerboseSwitch
                         }
                         Else
                         {
@@ -123,7 +123,7 @@ function Invoke-Installation
 
                         If($IsPresent)
                         {
-                            Write-Verbose -Message "Installation of $ProductName on $env:COMPUTERNAME completed successfully."
+                            Write-Verbose -Message "Installation of $ProductName on $env:COMPUTERNAME completed successfully." -Verbose:$VerboseSwitch
                         }
                         Else
                         {

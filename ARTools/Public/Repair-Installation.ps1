@@ -24,12 +24,11 @@ function Repair-Installation
 
     Process{
         [scriptblock]$ScriptBlock = {
-            $VerbosePreference = $Using:VerbosePreference
-            $WarningPreference = $Using:WarningPreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
         
-            Write-Verbose -Message "Starting repair of $Using:SoftwareCode using repair parameters $Using:RepairParameters ..."
+            Write-Verbose -Message "Starting repair of $Using:SoftwareCode using repair parameters $Using:RepairParameters ..." -Verbose:$VerboseSwitch
             Start-Process -FilePath "$env:windir\System32\msiexec.exe" -ArgumentList "/$Using:RepairParameters $Using:SoftwareCode /qn" -Wait -Verb RunAs -WindowStyle Hidden
-            Write-Verbose -Message "Repair of $Using:SoftwareCode finished."
+            Write-Verbose -Message "Repair of $Using:SoftwareCode finished." -Verbose:$VerboseSwitch
         }
     
         $InvokeArgs = @{

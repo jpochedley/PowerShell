@@ -66,7 +66,7 @@ function Test-TCPPort
                         Import-Module -Name ARTools -Force
                         Import-Module -Name DnsClient
                     
-                        Test-TCPPort -StartIPAddress $($Using:Range.StartIPAddress) -EndIPAddress $($Using:Range.EndIPAddress) -Port $Using:Port -Verbose:$Using:VerbosePreference
+                        Test-TCPPort -StartIPAddress $($Using:Range.StartIPAddress) -EndIPAddress $($Using:Range.EndIPAddress) -Port $Using:Port -Verbose:$VerboseSwitch
                     }
                 }
                 Else
@@ -77,7 +77,7 @@ function Test-TCPPort
                         Import-Module -Name ARTools -Force
                         Import-Module -Name DnsClient
                     
-                        Test-TCPPort -StartIPAddress $($Using:Range.StartIPAddress) -Port $Using:Port -Verbose:$Using:VerbosePreference
+                        Test-TCPPort -StartIPAddress $($Using:Range.StartIPAddress) -Port $Using:Port -Verbose:$VerboseSwitch
                     }
                 }
             }

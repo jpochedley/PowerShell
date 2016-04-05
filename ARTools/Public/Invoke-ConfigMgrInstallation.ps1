@@ -29,7 +29,7 @@ function Invoke-ConfigMgrInstallation
 
     Process{
         [scriptblock]$ScriptBlock = {
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
             $ApplicationName = $Using:ApplicationName
             
@@ -47,7 +47,7 @@ function Invoke-ConfigMgrInstallation
                 {
                     Try
                     {
-                        Write-Verbose -Message "Performing $(($Using:Action).ToLower())ation of $ApplicationName on $env:COMPUTERNAME ..."
+                        Write-Verbose -Message "Performing $(($Using:Action).ToLower())ation of $ApplicationName on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                     
                         $null = Invoke-CimMethod -Namespace root/ccm/ClientSDK -ClassName CCM_Application -MethodName $Using:Action -Arguments @{
                             ID                = $Application.ID
@@ -58,7 +58,7 @@ function Invoke-ConfigMgrInstallation
                             IsRebootIfNeeded  = $false
                         } -ErrorAction Stop -Verbose:$false
                     
-                        Write-Verbose -Message "$ApplicationName $(($Using:Action).ToLower())ation on $env:COMPUTERNAME triggered successfully."
+                        Write-Verbose -Message "$ApplicationName $(($Using:Action).ToLower())ation on $env:COMPUTERNAME triggered successfully." -Verbose:$VerboseSwitch
                     }
                     Catch
                     {

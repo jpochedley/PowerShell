@@ -24,7 +24,7 @@ function Add-WorkstationPrinter
     
     Process{
         [scriptblock]$Scriptblock = {
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
 
             Foreach($Printer in $Using:PrinterName)
@@ -43,11 +43,11 @@ function Add-WorkstationPrinter
                 
                 If($null -ne $Verification)
                 {
-                    Write-Verbose -Message "$($Printer.ToUpper()) printer successfully added to $($env:computername.ToUpper())."
+                    Write-Verbose -Message "$($Printer.ToUpper()) printer successfully added to $($env:computername.ToUpper())." -Verbose:$VerboseSwitch
                 }
                 Else
                 {
-                    Write-Warning -Message "Failed to add $($Printer.ToUpper()) printer to $($env:computername.ToUpper())"
+                    Write-Error -Message "Failed to add $($Printer.ToUpper()) printer to $($env:computername.ToUpper())"
                 }
             }
 

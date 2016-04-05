@@ -25,8 +25,13 @@ function Get-LoggedOnUser
         [scriptblock]$Scriptblock = {
             $Computer = $Using:Computer
             
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
+            
+            $LockScreenPresent = Get-Process -Name LogonUI -ErrorAction SilentlyContinue
+            
+            If($LockScreenPresent){$LockScreenActive = $True}
+            Else{$LockScreenActive = $False}
 
             $ProcessInfo = New-Object -TypeName System.Diagnostics.ProcessStartInfo
             $ProcessInfo.FileName = "$env:windir\System32\quser.exe"
@@ -57,6 +62,7 @@ function Get-LoggedOnUser
                     $HashProps = @{
                         Username     = $CurrentLine[0] -replace '>'
                         ComputerName = $Computer.ToUpper()
+                        LockScreenActive = $LockScreenActive
                     }
 
                     If($CurrentLine[2] -eq 'Disc') 
@@ -80,22 +86,17 @@ function Get-LoggedOnUser
                     Where-Object -FilterScript {
                         $_.UserName -match '\w'
                     } |
-                    Select-Object -Property UserName, ComputerName, SessionName, Id, State, IdleTime, LogonTime
+                    Select-Object -Property UserName, ComputerName, LockScreenActive, SessionName, Id, State, IdleTime, LogonTime
                 }
                 $ProcessError = $Process.StandardError.ReadToEnd().Trim()
 
                 If($ProcessError -notmatch '\w')
                 {
                     $ProcessOutput
-
-                    Get-Process -Name LogonUI -ErrorAction SilentlyContinue | 
-                    ForEach-Object -Process {
-                        Write-Verbose -Message "Lockscreen active on $env:COMPUTERNAME."
-                    }
                 }
                 ElseIf($ProcessError -match 'No User exists for *')
                 {
-                    Write-Warning -Message "No users logged on to $($Computer.ToUpper())."
+                    Write-Verbose -Message "No users logged on to $($Computer.ToUpper())." -Verbose:$VerboseSwitch
                 }
                 ElseIf($ProcessError -match 1722)
                 {

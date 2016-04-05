@@ -121,7 +121,7 @@ function Find-UnquotedServicePath
     
     Process{
         $ScriptBlock = {
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
 
             $Services = Get-WmiObject -Class win32_service -Filter "StartMode='Auto' AND NOT PathName LIKE 'c:\\Windows\\%' AND PathName LIKE '% %'  AND NOT PathName LIKE '%`"%'" -Verbose:$false
@@ -182,7 +182,7 @@ function Find-UnquotedServicePath
                     $FixParams.ComputerName = $Grouping.Group.PSComputerName
                         
                     Invoke-Command @FixParams -ScriptBlock{
-                        $VerbosePreference = $Using:VerbosePreference
+                        $VerboseSwitch = $Using:PSBoundParameters.Verbose
                         $WarningPreference = $Using:WarningPreference
                         
                         $ServiceKey = Get-Item -Path "HKLM:\SYSTEM\CurrentControlSet\Services\$Using:ServiceName"

@@ -26,7 +26,7 @@ function Remove-LocalGroupMember
         [scriptblock]$Scriptblock = {
             $Group = $Using:Group
             $Name = $Using:Name
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
             
             
@@ -53,7 +53,7 @@ function Remove-LocalGroupMember
                         
                         If($Member -notin $GroupMembership)
                         {
-                            Write-Verbose -Message "Member '$Member' removed from $Group group on $env:COMPUTERNAME."
+                            Write-Verbose -Message "Member '$Member' removed from $Group group on $env:COMPUTERNAME." -Verbose:$VerboseSwitch
                         }
                     }
                     Catch

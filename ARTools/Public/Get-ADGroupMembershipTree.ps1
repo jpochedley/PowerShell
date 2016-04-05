@@ -49,7 +49,7 @@ function Get-ADGroupMembershipTree
                     Get-ADGroupMembershipTree -Identity $Object.DistinguishedName -Inheritence $Object.Name
                 }
             }
-            Else
+			Else
             {
                 If($Inheritence)
                 {

@@ -15,14 +15,21 @@ function Reset-WindowsUpdate
 
     Process{
         [scriptblock]$Scriptblock = {
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
+            $WarningPreference = $Using:WarningPreference
+            
             Try
             {
                 'bits', 'wuauserv', 'appidsvc', 'cryptsvc' | ForEach-Object -Process {
+                    Write-Verbose -Message "Stopping service : $_" -Verbose:$VerboseSwitch
                     Stop-Service -Name $_ -Force -Confirm:$False -ErrorAction Stop
                 }
-
+                
+                Write-Verbose -Message "Deleting qmgr*.dat files ..." -Verbose:$VerboseSwitch
                 Get-ChildItem -Path "$env:ALLUSERSPROFILE\Application Data\Microsoft\Network\Downloader\qmgr*.dat" | Remove-Item -Force -Confirm:$False
 
+                Write-Verbose -Message "Renaming SoftwareDistribution and Catroot2 folders." -Verbose:$VerboseSwitch
+                
                 "$env:SystemRoot\SoftwareDistribution", "$env:SystemRoot\system32\catroot2" | 
 
                 ForEach-Object -Process {
@@ -35,6 +42,8 @@ function Reset-WindowsUpdate
                     Rename-Item -Path $Path -NewName $NewName -Force -Confirm:$False
                 }
 
+                Write-Verbose -Message "Resetting permissions for BITS and WUASERV services ..." -Verbose:$VerboseSwitch
+
                 Start-Process -FilePath "$env:SystemRoot\System32\sc.exe" -ArgumentList 'sdset bits D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)' -Wait -WindowStyle Hidden
 
                 Start-Process -FilePath "$env:SystemRoot\System32\sc.exe" -ArgumentList 'sdset wuauserv D:(A;;CCLCSWRPWPDTLOCRRC;;;SY)(A;;CCDCLCSWRPWPDTLOCRSDRCWDWO;;;BA)(A;;CCLCSWLOCRRC;;;AU)(A;;CCLCSWRPWPDTLOCRRC;;;PU)' -Wait -WindowStyle Hidden
@@ -46,12 +55,15 @@ function Reset-WindowsUpdate
                 'wucltux.dll', 'muweb.dll', 'wuwebv.dll' |
 
                 ForEach-Object -Process {
+                    Write-Verbose -Message "Re-registering dll: $_" -Verbose:$VerboseSwitch
                     Start-Process -FilePath "$env:SystemRoot\System32\regsvr32.exe" -ArgumentList "/s $_" -Wait -WindowStyle Hidden
                 }
-
+                
+                Write-Verbose -Message "Resetting network adapter." -Verbose:$VerboseSwitch
                 Start-Process -FilePath "$env:SystemRoot\System32\netsh.exe" -ArgumentList 'winsock reset' -Wait -WindowStyle Hidden
 
                 'bits', 'wuauserv', 'appidsvc', 'cryptsvc' | ForEach-Object -Process {
+                    Write-Verbose -Message "Starting service: $_" -Verbose:$VerboseSwitch
                     Start-Service -Name $_
                 }
             }

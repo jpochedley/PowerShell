@@ -17,7 +17,7 @@ function Get-WorkstationPrinter
     Process{
         [scriptblock]$ScriptBlock = {
             $WarningPreference = $Using:WarningPreference
-        
+            
             $Connections = Get-ChildItem -Path 'HKLM:\SOFTWARE\Microsoft\Windows NT\CurrentVersion\Print\Connections' | ForEach-Object -Process {
                 $PSItem |
                 Get-ItemProperty -Name Printer |

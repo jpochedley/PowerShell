@@ -1,5 +1,4 @@
 #requires -Version 2
-
 function Add-LocalGroupMember
 {
     [CmdletBinding()]
@@ -11,27 +10,6 @@ function Add-LocalGroupMember
         [string[]]$ComputerName = 'localhost',
         
         [Parameter(Mandatory = $True,ValueFromPipelineByPropertyName = $True)]
-        [ValidateScript({
-                    $Username = $PSItem
-                    
-                    Try
-                    {
-                        $null = Get-ADGroup -Identity $Username -ErrorAction Stop
-                        $True
-                    }
-                    Catch
-                    {
-                        Try
-                        {
-                            $null = Get-ADUser -Identity $Username -ErrorAction Stop
-                            $True
-                        }
-                        Catch
-                        {
-                            Throw "Cannot find user or group with identity: '$Username'"
-                        }
-                    }
-        })]
         [string[]]$Name,
         
         [Parameter(Mandatory = $True,ValueFromPipelineByPropertyName = $True)]
@@ -46,14 +24,16 @@ function Add-LocalGroupMember
     
     Process{
         [scriptblock]$Scriptblock = {
-            $VerbosePreference = $Using:VerbosePreference
+            $Group = $Using:Group
+            $Name = $Using:Name
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
             
-            $GroupObject = [ADSI]"WinNT://$env:COMPUTERNAME/$Using:Group"
-        
+            $GroupObject = [ADSI]"WinNT://$env:COMPUTERNAME/$Group"
+            
             If($null -ne $GroupObject)
             {
-                Foreach($Member in $Using:Name)
+                Foreach($Member in $Name)
                 {
                     Try
                     {
@@ -61,7 +41,7 @@ function Add-LocalGroupMember
                         
                         If($PSVersionTable.PSVersion.Major -ge 3)
                         {
-                            $GroupMembership = (Get-CimInstance -Query "SELECT * FROM Win32_GroupUser WHERE GroupComponent=`"Win32_Group.Domain='$env:COMPUTERNAME',Name='$Using:Group'`"" -Verbose:$False).PartComponent.Name
+                            $GroupMembership = (Get-CimInstance -Query "SELECT * FROM Win32_GroupUser WHERE GroupComponent=`"Win32_Group.Domain='$env:COMPUTERNAME',Name='$Group'`"" -Verbose:$False).PartComponent.Name
                         }
                         Else
                         {
@@ -72,12 +52,12 @@ function Add-LocalGroupMember
                         
                         If($Member -in $GroupMembership)
                         {
-                            Write-Verbose -Message "Member '$Member' added to $Using:Group group on $env:COMPUTERNAME."
+                            Write-Verbose -Message "Member '$Member' added to $Group group on $env:COMPUTERNAME." -Verbose:$VerboseSwitch
                         }
                     }
                     Catch
                     {
-                        Write-Warning -Message "Unable to add member '$Member' to $Using:Group group on $env:COMPUTERNAME. $($_.Exception.InnerException.Message)"
+                        Write-Error -Message "Unable to add member '$Member' to $Group group on $env:COMPUTERNAME. $($_.Exception.InnerException.Message)"
                     }    
                 }
             }

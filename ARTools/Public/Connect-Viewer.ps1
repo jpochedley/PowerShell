@@ -25,10 +25,10 @@ function Connect-Viewer
     
     Process{
         [scriptblock]$InitialScriptBlock = {
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
 
-            Write-Verbose -Message "Backing up default Remote Control Viewer settings on $env:COMPUTERNAME ..."
+            Write-Verbose -Message "Backing up default Remote Control Viewer settings on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
 
             $Backup = Start-Process -FilePath $env:windir\system32\reg.exe -ArgumentList "export `"HKLM\SOFTWARE\Microsoft\SMS\Client\Client Components\Remote Control`" `"$env:windir\Temp\RemoteControlDefaultSettings.reg`"" -PassThru -Wait
             
@@ -38,23 +38,23 @@ function Connect-Viewer
             }
             Else
             {
-                Write-Verbose -Message "Default Remote Control Viewer settings on $env:COMPUTERNAME backed up successfully."
+                Write-Verbose -Message "Default Remote Control Viewer settings on $env:COMPUTERNAME backed up successfully." -Verbose:$VerboseSwitch
             
                 'Permission Required', 'RemCtrl Taskbar Icon', 'RemCtrl Connection Bar', 'Audible Signal' |
 
                 ForEach-Object -Process {
-                    Write-Verbose -Message "Changing $_ setting on $env:COMPUTERNAME ..."
+                    Write-Verbose -Message "Changing $_ setting on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                     
                     Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\SMS\Client\Client Components\Remote Control' -Name $_ -Value 0
                     
-                    Write-Verbose -Message "$_ setting set to 0 on $env:COMPUTERNAME."
+                    Write-Verbose -Message "$_ setting set to 0 on $env:COMPUTERNAME." -Verbose:$VerboseSwitch
                 }
 
-                Write-Verbose -Message "Changing Access Level setting on $env:COMPUTERNAME ..."
+                Write-Verbose -Message "Changing Access Level setting on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                 
                 Set-ItemProperty -Path 'HKLM:\SOFTWARE\Microsoft\SMS\Client\Client Components\Remote Control' -Name 'Access Level' -Value 1
                 
-                Write-Verbose -Message "Access Level setting set to 1 on $env:COMPUTERNAME."
+                Write-Verbose -Message "Access Level setting set to 1 on $env:COMPUTERNAME." -Verbose:$VerboseSwitch
             }
         }
 
@@ -89,10 +89,10 @@ function Connect-Viewer
             If($Hidden)
             {
                 [scriptblock]$CleanupScriptBlock = {
-                    $VerbosePreference = $Using:VerbosePreference
+                    $VerboseSwitch = $Using:PSBoundParameters.Verbose
                     $WarningPreference = $Using:WarningPreference
                         
-                    Write-Verbose -Message "Restoring default Remote Control Viewer settings on $env:COMPUTERNAME ..."
+                    Write-Verbose -Message "Restoring default Remote Control Viewer settings on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                         
                     $Restore = Start-Process -FilePath $env:windir\system32\reg.exe -ArgumentList "import `"$env:windir\Temp\RemoteControlDefaultSettings.reg`"" -PassThru -Wait
                         
@@ -102,7 +102,7 @@ function Connect-Viewer
                     }
                     Else
                     {
-                        Write-Verbose -Message "Default Remote Control Viewer settings on $env:COMPUTERNAME restored successfully."
+                        Write-Verbose -Message "Default Remote Control Viewer settings on $env:COMPUTERNAME restored successfully." -Verbose:$VerboseSwitch
                             
                         Remove-Item -Path "$env:windir\Temp\RemoteControlDefaultSettings.reg" -Force
                     }

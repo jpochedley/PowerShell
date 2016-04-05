@@ -41,7 +41,7 @@ function Invoke-ConfigMgrUpdate
         [scriptblock]$Scriptblock = {
             $Action = $Using:Action
             $ConfigMgrActions = $Using:ConfigMgrActions
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
             
             Foreach($Trigger in $Action)
@@ -52,11 +52,11 @@ function Invoke-ConfigMgrUpdate
                 
                 Try
                 {
-                    Write-Verbose -Message "Invoking $Trigger action on $env:COMPUTERNAME ..."
+                    Write-Verbose -Message "Invoking $Trigger action on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                     $null = Invoke-CimMethod -Class sms_client -Namespace root\ccm -MethodName triggerschedule -Arguments @{
                         sScheduleID = $ScheduleID
                     } -ErrorAction Stop -Verbose:$False
-                    Write-Verbose -Message "$Trigger action invoked on $env:COMPUTERNAME successfully."
+                    Write-Verbose -Message "$Trigger action invoked on $env:COMPUTERNAME successfully." -Verbose:$VerboseSwitch
                 }
                 Catch
                 {

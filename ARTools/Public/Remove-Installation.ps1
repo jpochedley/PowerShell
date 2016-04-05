@@ -29,7 +29,7 @@ function Remove-Installation
 
     Process{
         [scriptblock]$ScriptBlock = {
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
 
             $SoftwareCode = $Using:SoftwareCode
@@ -39,13 +39,13 @@ function Remove-Installation
             
             If(-not [string]::IsNullOrEmpty($SoftwareCode))
             {
-                Write-Verbose -Message "Beginning uninstallation of MSI package $SoftwareCode on $env:COMPUTERNAME ..."
+                Write-Verbose -Message "Beginning uninstallation of MSI package $SoftwareCode on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                 $ArgumentList = "/X $SoftwareCode /qn /norestart"
                 $FilePath = "$env:windir\System32\msiexec.exe"
             }
             Else
             {
-                Write-Verbose -Message "Beginning uninstallation of $ProductName on $env:COMPUTERNAME ..."
+                Write-Verbose -Message "Beginning uninstallation of $ProductName on $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
             }
 
             Start-Process -FilePath $FilePath -ArgumentList $ArgumentList -Wait -WindowStyle Hidden
@@ -60,7 +60,7 @@ function Remove-Installation
                 }
                 Else
                 {
-                    Write-Verbose -Message "Uninstallation of  MSI package $SoftwareCode on $env:COMPUTERNAME completed successfully."
+                    Write-Verbose -Message "Uninstallation of  MSI package $SoftwareCode on $env:COMPUTERNAME completed successfully." -Verbose:$VerboseSwitch
                 }
             }
             Else
@@ -73,7 +73,7 @@ function Remove-Installation
                 }
                 Else
                 {
-                    Write-Verbose -Message "Uninstallation of $ProductName on $env:COMPUTERNAME completed successfully."
+                    Write-Verbose -Message "Uninstallation of $ProductName on $env:COMPUTERNAME completed successfully." -Verbose:$VerboseSwitch
                 }
             }
         }

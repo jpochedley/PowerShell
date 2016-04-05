@@ -79,7 +79,7 @@ function Remove-UserProfile
 
         [scriptblock]$Scriptblock = {
             $SID = $Using:SID
-            $VerbosePreference = $Using:VerbosePreference
+            $VerboseSwitch = $Using:PSBoundParameters.Verbose
             $WarningPreference = $Using:WarningPreference
             
             $LoggedonUsers = Get-WmiObject -Class win32_process |
@@ -116,14 +116,14 @@ function Remove-UserProfile
                     {
                         Foreach($Profile in $Profiles)
                         {
-                            Write-Verbose -Message "Removing profile $($Profile.LocalPath) from $env:COMPUTERNAME ..."
+                            Write-Verbose -Message "Removing profile $($Profile.LocalPath) from $env:COMPUTERNAME ..." -Verbose:$VerboseSwitch
                             $Profile | Remove-WmiObject -ErrorAction Stop
-                            Write-Verbose -Message "Profile $($Profile.LocalPath) successfully removed on $env:COMPUTERNAME."
+                            Write-Verbose -Message "Profile $($Profile.LocalPath) successfully removed on $env:COMPUTERNAME." -Verbose:$VerboseSwitch
                         }
                     }
                     Catch
                     {
-                        Write-Warning -Message "Failed to remove profile on $env:COMPUTERNAME. $($_.Exception.Message)"
+                        Write-Error -Message "Failed to remove profile on $env:COMPUTERNAME. $($_.Exception.Message)"
                     }
                 }
                 Else
