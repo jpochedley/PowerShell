@@ -8,11 +8,11 @@ $FunctionsToExport = (Get-ChildItem -Path $PSScriptRoot\..\ARTools\Public | Sele
 
 @"
 @{
-    ModuleVersion     = '1.0'
+    ModuleVersion     = '2016.4.6'
 	PrivateData       = @{
         PSData = @{
             # ReleaseNotes of this module
-            ReleaseNotes = ''
+            ReleaseNotes = 'Added Confirm-ADGroupMembership function.'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             # Tags = @()
@@ -31,7 +31,7 @@ $FunctionsToExport = (Get-ChildItem -Path $PSScriptRoot\..\ARTools\Public | Sele
     Author            = 'Adrian Rodriguez'
 	Description       = 'PowerShell module for performing various tasks.'
     Copyright         = '(c) 2015 Adrian Rodriguez. All rights reserved.'
-    PowerShellVersion = '4.0'
+    PowerShellVersion = '5.0'
     RequiredModules   = @()
 	RootModule        = '.\ARTools.psm1'
     TypesToProcess    = '.\ARtools.ps1xml'
