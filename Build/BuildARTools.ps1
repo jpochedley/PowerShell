@@ -8,11 +8,11 @@ $FunctionsToExport = (Get-ChildItem -Path $PSScriptRoot\..\ARTools\Public | Sele
 
 @"
 @{
-    ModuleVersion     = '2016.4.6'
+    ModuleVersion     = '2016.4.7'
 	PrivateData       = @{
         PSData = @{
             # ReleaseNotes of this module
-            ReleaseNotes = 'Added Confirm-ADGroupMembership function.'
+            ReleaseNotes = 'Fixed issue with Get-BitlockerKey function.'
 
             # Tags applied to this module. These help with module discovery in online galleries.
             # Tags = @()

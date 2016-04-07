@@ -11,7 +11,7 @@ function Get-BitlockerKey
 	Begin{
 		$BitlockerKeys = get-adobject -filter "objectclass -eq 'msFVE-RecoveryInformation'" -Properties DistinguishedName, msFVE-RecoveryPassword, WhenCreated
 
-		Class  ARToolsBitlockerKey {
+		Class ARToolsBitlockerKey {
 			[string]$ComputerName
 			[string]$RecoveryKey
 
@@ -37,7 +37,7 @@ function Get-BitlockerKey
 			Try{
 				$null = Get-ADComputer -Identity $Computer -ErrorAction Stop
 
-				[ARBitlockerKey]::New($Computer.ToUpper(),$BitlockerKeys.Where({$_.DistinguishedName -match "CN=$Computer,"})[-1].'msFVE-RecoveryPassword')
+				[ARToolsBitlockerKey]::New($Computer.ToUpper(),$BitlockerKeys.Where({$_.DistinguishedName -match "CN=$Computer,"})[-1].'msFVE-RecoveryPassword')
 			}
 			Catch{
 				Write-Warning -Message "$($_.Exception.Message)"
