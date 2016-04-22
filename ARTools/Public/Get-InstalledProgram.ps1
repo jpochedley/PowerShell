@@ -69,7 +69,7 @@ function Get-InstalledProgram
                 }
             }
             
-            Get-WmiObject @Params | Sort-Object ProductName
+            Get-CimInstance @Params | Sort-Object ProductName
         }
         
         $InvokeArgs = @{

@@ -1,4 +1,3 @@
-#requires -Version 2
 function Connect-RDP
 {
     [CmdletBinding()]
@@ -12,48 +11,23 @@ function Connect-RDP
         [switch]$Force
     )
     
-    DynamicParam{
-        If($ComputerName)
-        {
-            New-DynamicParameter -Name Credential -TypeConstraint ([pscredential])
-        }
-    }
-    
-    Begin{
-        If($PSBoundParameters.ContainsKey('Credential'))
-        {
-            $Credential = $PSBoundParameters.Credential
-            $User = $Credential.UserName
-            $Password = $Credential.GetNetworkCredential().Password
-
-            If($User -like "$env:USERDOMAIN*")
-            {
-                Add-Type -AssemblyName System.DirectoryServices.AccountManagement
-                $Domain = $env:USERDOMAIN
-                $ContextType = [System.DirectoryServices.AccountManagement.ContextType]::Domain
-                $PrincipalContext = New-Object -TypeName System.DirectoryServices.AccountManagement.PrincipalContext -ArgumentList $ContextType, $Domain
-                $CredentialValidity = $PrincipalContext.ValidateCredentials($User,$Password)
-                If(-not $CredentialValidity)
-                {
-                    Write-Warning -Message 'Logon failure: Unknown username or bad password.' 
-                    Break
-                }
-            }
-        }
-    }
+    Begin{}
 
     Process{
         If($PSBoundParameters.ContainsKey('ComputerName'))
         {
             Foreach($Computer in $ComputerName)
             {
-                If((Test-Connection -ComputerName $ComputerName -Count 1 -Quiet) -or $Force)
+                $ADSearcher = [adsisearcher]"(&(objectclass=computer)(name=$Computer))"
+                
+                If($ADSearcher.FindOne().Properties.dnshostname)
                 {
-                    If($PSBoundParameters.ContainsKey('Credential'))
-                    {
-                        Start-Process -FilePath $env:windir\System32\cmdkey.exe -ArgumentList "/generic:$Computer /user:$User /pass:$Password"
-                    }
-
+                    $Computer = $ADSearcher.FindOne().Properties.dnshostname
+                }
+                
+                If((Test-Connection -ComputerName $Computer -Count 1 -Quiet) -or $Force)
+                {
+                    Write-Verbose -Message "Connecting to $Computer ..."
                     Start-Process -FilePath $env:windir\System32\mstsc.exe -ArgumentList "/v:$Computer /f" -WindowStyle Normal
                 }
                 Else

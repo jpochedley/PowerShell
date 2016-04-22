@@ -1,4 +1,4 @@
-#function Confirm-ADGroupMembership
+function Confirm-ADGroupMembership
 {
     [cmdletbinding()]
 

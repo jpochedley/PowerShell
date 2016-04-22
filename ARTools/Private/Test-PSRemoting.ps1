@@ -35,6 +35,4 @@ function Test-PSRemoting
     End{}
 }
 
-Export-ModuleMember -Function * -Verbose:$False
-
 

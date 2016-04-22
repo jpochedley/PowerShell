@@ -34,7 +34,10 @@ function Disable-User
                         Throw "Cannot find the following OU: '$Identity'"
                     }
         })]
-		[string]$ExpiredOU
+		[string]$ExpiredOU,
+        
+        [Parameter(Mandatory = $False)]
+        [double]$DaysToRetain
     )
 
     Begin{
@@ -68,21 +71,28 @@ function Disable-User
         {
             If($PSCmdlet.ShouldProcess($User))
             {
+                $Description = "Disabled on $((Get-Date).ToString('MM-dd-yy')) by $env:USERDOMAIN\$env:USERNAME"
+                
+                If($null -ne $DaysToRetain)
+                {
+                    $Description += " | Retain Until $((Get-Date).AddDays($DaysToRetain).ToString('MM-dd-yy'))"
+                }
+                
 				Disable-ADAccount -Identity $User -PassThru -Server $Server -ErrorAction Stop | 
 
                 Move-ADObject -TargetPath $ExpiredOU -Server $Server -PassThru -ErrorAction Stop | 
 
-                Set-ADUser -Description "Disabled on $((Get-Date).ToString('MM-dd-yy')) by $env:USERDOMAIN\$env:USERNAME" -Server $Server -PassThru -ErrorAction Stop |
+                Set-ADUser -Description $Description -Server $Server -PassThru -ErrorAction Stop |
 
-                Get-ADPrincipalGroupMembership -Server $Server -ErrorAction Stop | 
+                Get-ADUser -Server $Server -Properties MemberOf -ErrorAction Stop |
 
-                Where-Object -Property Name -NE -Value 'Domain Users' | 
+                Select-Object -ExpandProperty MemberOf |
 
                 ForEach-Object -Process {
-                    Remove-ADGroupMember -Identity $_.DistinguishedName -Members $User -Server $Server -Confirm:$False -ErrorAction Stop
+                    Remove-ADGroupMember -Identity $_ -Members $User -Server $Server -Confirm:$False -ErrorAction Stop
                 }
 
-                Reset-ADPassword -Username $User -Verbose -Confirm:$False -Server $Server
+                Reset-ADPassword -Username $User -Confirm:$False -Server $Server
 
                 Get-Mailbox -Identity $User -DomainController $Server -ErrorAction SilentlyContinue | Set-Mailbox -HiddenFromAddressListsEnabled:$True -DomainController $Server
 

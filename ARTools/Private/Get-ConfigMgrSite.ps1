@@ -21,6 +21,4 @@ function Get-ConfigMgrSite
     End{}
 }
 
-Export-ModuleMember -Function * -Verbose:$False
-
 

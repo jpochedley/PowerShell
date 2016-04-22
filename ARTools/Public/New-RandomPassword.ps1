@@ -77,7 +77,7 @@ Function New-RandomPassword
                         }
                     }
                 }
-                until($HasSymbols -and $HasNumbers -and $HasUppercase -and $HasLowercase)
+                until(($HasSymbols -or $ExcludeSpecialCharacters) -and $HasNumbers -and $HasUppercase -and $HasLowercase)
         
                 $Password = -join $GeneratedPassword
     
@@ -100,6 +100,7 @@ Function New-RandomPassword
     End{}
 }
 
+Get-Alias -Name New-Password -ErrorAction SilentlyContinue | Remove-Item -Force
 New-Alias -Name New-Password -Value New-RandomPassword
 
 

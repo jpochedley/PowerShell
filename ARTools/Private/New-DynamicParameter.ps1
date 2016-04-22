@@ -1,3 +1,5 @@
+using namespace System.Management.Automation
+
 function New-DynamicParameter
 { 
     [CmdletBinding(SupportsShouldProcess = $True,ConfirmImpact = 'Low')]
@@ -7,7 +9,7 @@ function New-DynamicParameter
         [string]$Name,
         
         [Parameter(Mandatory = $False)]
-        [array]$ValidateSetOptions,
+        [string[]]$ValidateSetOptions,
         
         [Parameter(Mandatory = $False)]
         [System.Type]$TypeConstraint = [string],
@@ -25,16 +27,16 @@ function New-DynamicParameter
         [switch]$ValueFromPipelineByPropertyName,
         
         [Parameter(Mandatory = $False)]
-        [System.Management.Automation.RuntimeDefinedParameterDictionary]$ParameterDictionary = $null
+        [RuntimeDefinedParameterDictionary]$ParameterDictionary = $null
     )
     
     Begin{}
     
     Process{
         If($PSCmdlet.ShouldProcess((Get-PSCallStack).FunctionName, 'Create Dynamic Parameter')){
-            $AttributeCollection = New-Object -TypeName System.Collections.ObjectModel.Collection[System.Attribute]
+            $AttributeCollection = [System.Collections.ObjectModel.Collection[System.Attribute]]::new()
         
-            $ParamAttribute = New-Object -TypeName System.Management.Automation.ParameterAttribute
+            $ParamAttribute = [ParameterAttribute]::new()
         
             $ParamAttribute.Mandatory = $Mandatory
         
@@ -51,11 +53,11 @@ function New-DynamicParameter
         
             If($null -ne $ValidateSetOptions)
             {
-                $ParameterOptions = New-Object -TypeName System.Management.Automation.ValidateSetAttribute -ArgumentList $ValidateSetOptions
+                $ParameterOptions = [ValidateSetAttribute]::new($ValidateSetOptions)
                 $AttributeCollection.Add($ParameterOptions)
             }
         
-            $RuntimeParameter = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameter -ArgumentList ($Name, $TypeConstraint, $AttributeCollection)
+            $RuntimeParameter = [RuntimeDefinedParameter]::new($Name, $TypeConstraint, $AttributeCollection)
         
             If($null -ne $ParameterDictionary)
             {
@@ -63,7 +65,7 @@ function New-DynamicParameter
             }
             Else
             {
-                $ParameterDictionary = New-Object -TypeName System.Management.Automation.RuntimeDefinedParameterDictionary
+                $ParameterDictionary = [RuntimeDefinedParameterDictionary]::new()
                 $ParameterDictionary.Add($Name,$RuntimeParameter)
             }
         
@@ -73,7 +75,5 @@ function New-DynamicParameter
     
     End{}
 }
-
-Export-ModuleMember -Function * -Verbose:$False
 
 

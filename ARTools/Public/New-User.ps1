@@ -123,8 +123,6 @@ function New-User
     }
 
     Process{
-        $SecurePassword = $Password | ConvertTo-SecureString -AsPlainText -Force
-
         If($PSCmdlet.ParameterSetName -eq 'SpecificUser')
         {
             Try
@@ -204,17 +202,17 @@ function New-User
                 HomeDrive             = $ReferenceUser.HomeDrive
                 HomeDirectory         = $ReferenceUser.HomeDirectory |
                 Split-Path -Parent -ErrorAction SilentlyContinue |
-                Join-Path -ChildPath "\$Username" -ErrorAction SilentlyContinue
+                Join-Path -ChildPath "\$SamAccountName" -ErrorAction SilentlyContinue
                 Company               = $ReferenceUser.Company
-                SamAccountName        = $Username
-                UserPrincipalName     = "$Username@$env:USERDNSDOMAIN"
+                SamAccountName        = $SamAccountName
+                UserPrincipalName     = "$SamAccountName@$env:USERDNSDOMAIN"
                 GivenName             = $FirstName
                 Surname               = $LastName
                 Initials              = $MiddleInitial
                 DisplayName           = "$FirstName $MiddleInitial $LastName" -replace '  ', ' '
                 Name                  = "$FirstName $MiddleInitial $LastName" -replace '  ', ' '
                 CannotChangePassword  = $False
-                AccountPassword       = $SecurePassword
+                AccountPassword       = $Password
                 ChangePasswordAtLogon = $True
                 PasswordNeverExpires  = $False
                 Enabled               = $True
@@ -239,7 +237,7 @@ function New-User
                         Try
                         {
                             Write-Verbose -Message "Adding user to $Group group ..."
-                            Add-ADGroupMember -Identity $Group -Members $Username -Server $Server -ErrorAction Stop
+                            Add-ADGroupMember -Identity $Group -Members $SamAccountName -Server $Server -ErrorAction Stop
                             Write-Verbose -Message "User added to $Group group successfully."
                         }
                         Catch
@@ -262,7 +260,7 @@ function New-User
                         }
                         until($Exists)
 
-                        $AccessRuleObject = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList "$env:USERDOMAIN\$Username", 'FullControl', 'ContainerInherit, ObjectInherit', 'None', 'Allow'
+                        $AccessRuleObject = New-Object -TypeName System.Security.AccessControl.FileSystemAccessRule -ArgumentList "$env:USERDOMAIN\$SamAccountName", 'FullControl', 'ContainerInherit, ObjectInherit', 'None', 'Allow'
 
                         $ACL = Get-Acl -Path $NewUserAttributes.HomeDirectory
 

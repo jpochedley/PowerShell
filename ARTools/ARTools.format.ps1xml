@@ -44,53 +44,6 @@
       </ListControl>
     </View>
     <View>
-      <Name>Deserialized.ARTools.GroupMembershipRecursive</Name>
-      <ViewSelectedBy>
-        <TypeName>Deserialized.ARTools.GroupMembershipRecursive</TypeName>
-      </ViewSelectedBy>
-      <TableControl>
-        <TableHeaders>
-          <TableColumnHeader>
-            <Label>ComputerName</Label>
-            <Width>15</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Width>15</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Width>15</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Width>30</Width>
-          </TableColumnHeader>
-          <TableColumnHeader>
-            <Width>40</Width>
-          </TableColumnHeader>
-        </TableHeaders>
-        <TableRowEntries>
-          <TableRowEntry>
-            <TableColumnItems>
-              <TableColumnItem>
-                <PropertyName>PSComputerName</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Name</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Username</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Description</PropertyName>
-              </TableColumnItem>
-              <TableColumnItem>
-                <PropertyName>Group</PropertyName>
-              </TableColumnItem>
-            </TableColumnItems>
-          </TableRowEntry>
-        </TableRowEntries>
-      </TableControl>
-    </View>
-    <View>
       <Name>Deserialized.ARTools.GroupMembership</Name>
       <ViewSelectedBy>
         <TypeName>Deserialized.ARTools.GroupMembership</TypeName>
@@ -256,10 +209,9 @@
       </TableControl>
     </View>
     <View>
-      <Name>Deserialized.System.Management.ManagementObject#root\cimv2\sms\SMS_InstalledSoftware</Name>
+      <Name>Microsoft.Management.Infrastructure.CimInstance#root/cimv2/sms/SMS_InstalledSoftware</Name>
       <ViewSelectedBy>
-        <TypeName>Deserialized.System.Management.ManagementObject#root\cimv2\sms\SMS_InstalledSoftware</TypeName>
-        <TypeName>System.Management.ManagementObject#root\cimv2\sms\SMS_InstalledSoftware</TypeName>
+        <TypeName>Microsoft.Management.Infrastructure.CimInstance#root/cimv2/sms/SMS_InstalledSoftware</TypeName>
       </ViewSelectedBy>
       <TableControl>
         <TableHeaders>
@@ -289,7 +241,7 @@
                 <PropertyName>ProductVersion</PropertyName>
               </TableColumnItem>
               <TableColumnItem>
-                <PropertyName>InstalledOn</PropertyName>
+                <PropertyName>InstallDate</PropertyName>
               </TableColumnItem>
             </TableColumnItems>
           </TableRowEntry>

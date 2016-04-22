@@ -1,14 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
 <Types>
-  <Type>
-    <Name>Deserialized.System.Management.ManagementObject#root\cimv2\sms\SMS_InstalledSoftware</Name>
-    <Members>
-      <ScriptProperty>
-        <Name>InstalledOn</Name>
-        <GetScriptBlock>[management.managementDateTimeConverter]::ToDateTime($this.InstallDate)</GetScriptBlock>
-      </ScriptProperty>
-    </Members>
-  </Type>
 </Types>
 
 
