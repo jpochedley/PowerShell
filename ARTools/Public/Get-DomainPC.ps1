@@ -35,7 +35,7 @@ function Get-DomainPC
     End{}
 }
 
-Get-Alias -Name gpcs -ErrorAction SilentlyContinue | Remove-Item -Force
+Remove-Item -Path alias:\gpcs -Force -ErrorAction SilentlyContinue
 New-Alias -Name gpcs -Value Get-DomainPC -Description 'Get all domain PCs.'
 
 

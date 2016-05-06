@@ -100,7 +100,7 @@ Function New-RandomPassword
     End{}
 }
 
-Get-Alias -Name New-Password -ErrorAction SilentlyContinue | Remove-Item -Force
+Remove-Item -Path alias:\New-Password -Force -ErrorAction SilentlyContinue
 New-Alias -Name New-Password -Value New-RandomPassword
 
 

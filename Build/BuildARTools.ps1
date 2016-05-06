@@ -2,13 +2,13 @@
 
 Copy-Item $PSScriptRoot\..\..\ARTools\ARTools -Destination $PSScriptRoot\..\ -Container -Recurse
 
-Get-ChildItem -Path $PSScriptRoot\..\ARTools -File -Recurse -Include *-XP*,*Data*,*-CNS*,*-TeR* | Remove-Item -Force
+Get-ChildItem -Path $PSScriptRoot\..\ARTools -File -Recurse -Include *-XP*,*Data*,*-CNS*,*-TeR*,Validate-*.txt | Remove-Item -Force
 
 $FunctionsToExport = (Get-ChildItem -Path $PSScriptRoot\..\ARTools\Public | Select -ExpandProperty BaseName | Foreach{"'$_'"}) -join ",`r`n`t`t"
 
 @"
 @{
-    ModuleVersion     = '2016.4.21'
+    ModuleVersion     = '2016.5.5'
 	PrivateData       = @{
         PSData = @{
             # ReleaseNotes of this module
@@ -46,24 +46,5 @@ $FunctionsToExport = (Get-ChildItem -Path $PSScriptRoot\..\ARTools\Public | Sele
 }
 "@ | Out-File -FilePath $PSScriptRoot\..\ARTools\ARTools.psd1 
 
-Get-ChildItem -Path $PSScriptRoot\..\ARTools -File -Recurse -Include *ps1,*psm1,*ps1xml |
-Foreach{
-    $Item = $_
-    
-    $Content = Get-Content -Path $Item.FullName
-    
-    $StringBuilder = New-Object -TypeName System.Text.StringBuilder -ErrorAction Stop
-    
-    Foreach($Line in $Content)
-    {
-        If($Line -match '^# SIG # Begin signature block|^<!-- SIG # Begin signature block -->')
-        {
-            Break
-        }
-        Else{
-            $null = $StringBuilder.AppendLine($Line)
-        }
-    }
-    
-    Set-Content -Path $Item.FullName -Value $StringBuilder.ToString()
-}
+Get-ChildItem -Path $PSScriptRoot\..\ARTools -File -Recurse |
+Remove-Signature
