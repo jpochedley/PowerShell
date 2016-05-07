@@ -28,7 +28,7 @@ function Convert-HashToString
         }
         Else{
             $Indenting = '    '
-            $RecursiveIndenting = '    ' * (Get-PSCallStack).Where({$_.Command -eq 'Convert-HashToString' -and $_.InvocationInfo.CommandOrigin -eq 'Internal' -and $_.InvocationInfo.Line -notmatch '\$This'}).Count
+            $RecursiveIndenting = '    ' * (Get-PSCallStack).Where({$_.Command -match 'Convert-ArrayToString|Convert-HashToSTring' -and $_.InvocationInfo.CommandOrigin -eq 'Internal' -and $_.InvocationInfo.Line -notmatch '\$This'}).Count
         }
         
     }
@@ -70,7 +70,7 @@ function Convert-HashToString
                 }
                 ElseIf($Value -is [array])
                 {
-                    $Value = Convert-ArrayToString -Array $Value
+                    $Value = Convert-ArrayToString -Array $Value -Flatten:$Flatten
                     
                     [void]$StringBuilder.$Mode($Indenting + $RecursiveIndenting + "$Key = $Value")
                 }

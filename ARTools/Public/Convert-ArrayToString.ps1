@@ -6,40 +6,89 @@ function Convert-ArrayToString
     (
         [Parameter(Mandatory=$true,Position=0)]
         [AllowEmptyCollection()]
-        [Array]$Array
+        [Array]$Array,
+        
+        [Parameter(Mandatory=$False)]
+        [switch]$Flatten
     )
     
-    Begin{}
+    Begin{
+        If($Flatten)
+        {
+            $Mode = 'Append'
+        }
+        Else
+        {
+            $Mode = 'AppendLine'
+        }
+        
+        If($Flatten -or $Array.Count -eq 0)
+        {
+            $Indenting = ''
+            $RecursiveIndenting = ''
+        }
+        Else{
+            $Indenting = '    '
+            $RecursiveIndenting = '    ' * (Get-PSCallStack).Where({$_.Command -match 'Convert-ArrayToString|Convert-HashToSTring' -and $_.InvocationInfo.CommandOrigin -eq 'Internal' -and $_.InvocationInfo.Line -notmatch '\$This'}).Count
+        }    
+    }
     
     Process{
-        $Value = $Array.Foreach({
-            If($_ -is [string])
+        $StringBuilder = [System.Text.StringBuilder]::new()
+            
+        If($Array.Count -ge 1)
+        {
+            [void]$StringBuilder.$Mode("@(")
+        }
+        Else
+        {
+            [void]$StringBuilder.Append("@(")    
+        }
+        
+        Foreach($Item in $Array)
+        {
+            If($Item -is [String])
             {
-                "'$_'"
+                [void]$StringBuilder.Append($Indenting + $RecursiveIndenting + "'$Item'")
             }
-            ElseIf($_ -is [int] -or $_ -is [double])
+            ElseIf($Item -is [int] -or $Value -is [double])
             {
-                $_.ToString()
+                [void]$StringBuilder.Append($Indenting + $RecursiveIndenting + "$($Item.ToString())")
             }
-            ElseIf($_ -is [bool])
+            ElseIf($Item -is [bool])
             {
-                "`$$Value"
+                [void]$StringBuilder.Append($Indenting + $RecursiveIndenting + "`$$Item")
             }
-            ElseIf($_ -is [array])
+            ElseIf($Item -is [array])
             {
-                Convert-ArrayToString -Array $_
+                $Value = Convert-ArrayToString -Array $Item -Flatten:$Flatten
+                
+                [void]$StringBuilder.Append($Indenting + $RecursiveIndenting + $Value)
             }
-            ElseIf($_ -is [hashtable])
+            ElseIf($Item -is [hashtable])
             {
-                Convert-HashToSTring -Hashtable $_ -Flatten
+                $Value = Convert-HashToSTring -Hashtable $Item -Flatten:$Flatten
+                
+                [void]$StringBuilder.Append($Indenting + $RecursiveIndenting + $Value)
             }
             Else
             {
-                Throw "Key value is not of known type."    
+                Throw "Array element is not of known type."    
             }
-        }) -join ', '
+            
+            If(($Array.Length - 1) -ne $Array.IndexOf($Item))
+            {
+                [void]$StringBuilder.$Mode(', ')
+            }
+            ElseIf(-not $Flatten)
+            {
+                [void]$StringBuilder.AppendLine('')
+            }
+        }
         
-        "@($Value)"
+        [void]$StringBuilder.Append($RecursiveIndenting + ')')
+        
+        $StringBuilder.ToString()
     }
     
     End{}
