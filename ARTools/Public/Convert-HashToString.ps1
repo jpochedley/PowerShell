@@ -24,6 +24,7 @@ function Convert-HashToString
         If($Flatten)
         {
             $Indenting = ''
+            $RecursiveIndenting = ''
         }
         Else{
             $Indenting = '    '
@@ -37,7 +38,14 @@ function Convert-HashToString
         {
             $StringBuilder = [System.Text.StringBuilder]::new()
             
-            [void]$StringBuilder.$Mode("@{")
+            If($Item.Keys.Count -ge 1)
+            {
+                [void]$StringBuilder.$Mode("@{")
+            }
+            Else
+            {
+                [void]$StringBuilder.Append("@{")    
+            }
             
             Foreach($Key in $Item.Keys)
             {
@@ -55,6 +63,10 @@ function Convert-HashToString
                 ElseIf($Value -is [int] -or $Value -is [double])
                 {
                     [void]$StringBuilder.$Mode($Indenting + $RecursiveIndenting + "$Key = $($Value.ToString())")
+                }
+                ElseIf($Value -is [bool])
+                {
+                    [void]$StringBuilder.$Mode($Indenting + $RecursiveIndenting + "$Key = `$$Value")
                 }
                 ElseIf($Value -is [array])
                 {

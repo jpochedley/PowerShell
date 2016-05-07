@@ -21,6 +21,10 @@ function Convert-ArrayToString
             {
                 $_.ToString()
             }
+            ElseIf($_ -is [bool])
+            {
+                "`$$Value"
+            }
             ElseIf($_ -is [array])
             {
                 Convert-ArrayToString -Array $_
