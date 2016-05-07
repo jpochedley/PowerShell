@@ -45,8 +45,10 @@ function Convert-ArrayToString
             [void]$StringBuilder.Append("@(")    
         }
         
-        Foreach($Item in $Array)
+        For($i = 0; $i -lt $Array.Count; $i++)
         {
+            $Item = $Array[$i]
+            
             If($Item -is [String])
             {
                 [void]$StringBuilder.Append($Indenting + $RecursiveIndenting + "'$Item'")
@@ -76,7 +78,7 @@ function Convert-ArrayToString
                 Throw "Array element is not of known type."    
             }
             
-            If(($Array.Length - 1) -ne $Array.IndexOf($Item))
+            If($i -lt ($Array.Count - 1))
             {
                 [void]$StringBuilder.$Mode(', ')
             }

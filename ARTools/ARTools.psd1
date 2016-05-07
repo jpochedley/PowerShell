@@ -15,7 +15,7 @@
         RootModule = '.\ARTools.psm1'
         VariablesToExport = '*'
         AliasesToExport = '*'
-        ModuleVersion = '2016.5.7.3'
+        ModuleVersion = '2016.5.7.4'
         FormatsToProcess = '.\ARTools.format.ps1xml'
         FunctionsToExport = @(
             'Add-LocalGroupMember', 
